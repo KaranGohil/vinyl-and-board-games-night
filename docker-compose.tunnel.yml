@@ -1,0 +1,14 @@
+# Optional: put the app on the internet through a Cloudflare Tunnel.
+# No router port-forwarding and no public IP needed, which suits a home laptop.
+#   docker compose -f docker-compose.yml -f docker-compose.tunnel.yml up -d
+# Set TUNNEL_TOKEN in .env (see docs/self-hosting.md, "Option B").
+
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN:?Set TUNNEL_TOKEN in .env}
+    depends_on:
+      - web

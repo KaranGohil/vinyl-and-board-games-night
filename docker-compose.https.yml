@@ -1,0 +1,27 @@
+# Optional: automatic HTTPS with Caddy when your server has a public IP and a domain.
+#   docker compose -f docker-compose.yml -f docker-compose.https.yml up -d
+# Point your domain's DNS A record at the server first, and set DOMAIN in .env.
+# Using Cloudflare Tunnel or Tailscale instead? You don't need this file.
+
+services:
+  web:
+    ports: !reset []
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      DOMAIN: ${DOMAIN:?Set DOMAIN in .env, e.g. games.example.com}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - web
+
+volumes:
+  caddy-data:
+  caddy-config:

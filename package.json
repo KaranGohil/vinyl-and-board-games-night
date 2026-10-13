@@ -1,0 +1,21 @@
+{
+  "name": "vinyl-and-board-games-night",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Self-hostable app for planning a vinyl and board games night: vote on nights, games and records, then add it to your calendar.",
+  "license": "MIT",
+  "workspaces": [
+    "apps/api",
+    "apps/web"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "migrate": "npm run migrate -w apps/api"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
