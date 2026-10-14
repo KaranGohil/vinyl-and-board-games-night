@@ -49,6 +49,26 @@ Close the lid and check it still answers `ping 192.168.1.50` from another device
 > Leaving a laptop plugged in 24/7 is fine, but keep it somewhere ventilated. If your laptop's BIOS has a
 > "battery charge limit" (often 60% or 80%), turning it on extends the battery's life.
 
+## Using CasaOS? Install from the dashboard instead
+
+If you've installed [CasaOS](https://casaos.zimaspace.com), you can skip steps 3–5 and the terminal:
+
+1. Open [`docker-compose.casaos.yml`](../docker-compose.casaos.yml) from this repo and copy its contents.
+   It uses prebuilt images from GitHub Container Registry, built by the **Publish images** workflow.
+   (Running your own fork? Replace `ghcr.io/karangohil/` with your username, and after the first build mark both
+   packages **Public** under your GitHub profile → Packages → package settings.)
+2. Change the two placeholders in your copy:
+   - `change-me-to-something-long` → a long password of letters and numbers (it appears **twice**; both must match)
+   - `PUBLIC_URL` → the address friends will type, e.g. `http://192.168.1.50:8080`
+3. In the CasaOS dashboard: **App Store → "+" (top right) → Install a customized app → Import**, paste it, and install.
+4. Open the new **Vinyl & Board Games Night** tile, or go to `http://<laptop-ip>:8080`.
+
+Data is stored in `/DATA/AppData/vinyl-and-board-games-night/`. To update, use the app's settings in CasaOS to
+pull the latest image (or run `docker compose pull && docker compose up -d` in a terminal).
+
+You still need SSH once for step 2 (lid closed) and step 7 (backups). For backups with CasaOS, replace the
+`docker compose exec` line in `deploy/backup.sh` with `docker exec vbgn-db pg_dump -U vbgn vbgn`.
+
 ## 3. Install Docker
 
 ```bash

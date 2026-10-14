@@ -1,0 +1,82 @@
+# CasaOS install file. Uses prebuilt images, so nothing is compiled on your server.
+# In CasaOS: App Store → "+" (top right) → Install a customized app → Import → paste this file.
+# Before installing, change POSTGRES_PASSWORD (both places) and PUBLIC_URL below.
+
+name: vinyl-and-board-games-night
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: vbgn-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vbgn
+      POSTGRES_PASSWORD: change-me-to-something-long
+      POSTGRES_DB: vbgn
+    volumes:
+      - type: bind
+        source: /DATA/AppData/vinyl-and-board-games-night/postgres
+        target: /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vbgn -d vbgn"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    x-casaos:
+      envs:
+        - container: POSTGRES_PASSWORD
+          description:
+            en_us: Database password. Must match the one in the api service.
+
+  api:
+    image: ghcr.io/karangohil/vbgn-api:latest
+    container_name: vbgn-api
+    restart: unless-stopped
+    environment:
+      # Keep the password here identical to POSTGRES_PASSWORD above.
+      DATABASE_URL: postgres://vbgn:change-me-to-something-long@db:5432/vbgn
+      # The address friends open, e.g. http://192.168.1.50:8080 or https://games.example.com
+      PUBLIC_URL: http://192.168.1.50:8080
+    depends_on:
+      db:
+        condition: service_healthy
+    x-casaos:
+      envs:
+        - container: PUBLIC_URL
+          description:
+            en_us: The address people use to open the app. Used in calendar invite links.
+
+  web:
+    image: ghcr.io/karangohil/vbgn-web:latest
+    container_name: vbgn-web
+    restart: unless-stopped
+    ports:
+      - target: 80
+        published: "8080"
+        protocol: tcp
+    depends_on:
+      - api
+    x-casaos:
+      ports:
+        - container: "80"
+          description:
+            en_us: Web UI port
+
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: web
+  author: Karan Gohil
+  developer: Karan Gohil
+  category: Utilities
+  index: /
+  port_map: "8080"
+  scheme: http
+  title:
+    en_us: Vinyl & Board Games Night
+  tagline:
+    en_us: Vote on the night, the games and the records
+  description:
+    en_us: Plan a vinyl and board games night with friends. Offer a few nights, share one link, vote on games and records, then add the winning night to your calendar.
+  icon: https://raw.githubusercontent.com/KaranGohil/vinyl-and-board-games-night/main/apps/web/public/icon-512.png

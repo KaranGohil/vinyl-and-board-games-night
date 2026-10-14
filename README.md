@@ -38,6 +38,7 @@ Open <http://localhost:8080>.
 | Where | Guide |
 | --- | --- |
 | Old laptop or Raspberry Pi at home (Ubuntu Server) | [docs/self-hosting.md](docs/self-hosting.md) |
+| CasaOS dashboard (no terminal) | [docs/self-hosting.md#using-casaos-install-from-the-dashboard-instead](docs/self-hosting.md#using-casaos-install-from-the-dashboard-instead) |
 | Cloud server with your own domain and HTTPS | [docs/cloud.md](docs/cloud.md) |
 
 The home guide covers keeping a laptop awake with the lid closed, reaching it from outside your Wi-Fi with
